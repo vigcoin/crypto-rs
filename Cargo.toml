@@ -14,3 +14,7 @@ version = "1.0.0-pre.1"
 [[bin]]
 name = "vigcoin-core"
 path = "src/main.rs"
+
+[badges]
+travis-ci = { repository = "vigcoin/core-rs", branch = "master" }
+codecov = { repository = "vigcoin/core-rs", branch = "master", service = "github" }

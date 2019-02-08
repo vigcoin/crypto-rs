@@ -4,6 +4,9 @@ use std::mem;
 extern crate rand;
 extern crate ed25519_dalek;
 extern crate chrono;
+extern crate leb128;
+extern crate keccak;
+extern crate rust_base58;
 
 use rand::Rng;
 use rand::rngs::OsRng;

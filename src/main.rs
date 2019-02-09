@@ -2,33 +2,33 @@ mod account;
 mod types;
 use std::mem;
 
-extern crate rand;
-extern crate ed25519_dalek;
 extern crate chrono;
+extern crate ed25519_dalek;
 extern crate leb128;
-extern crate tiny_keccak;
+extern crate rand;
 extern crate rust_base58;
+extern crate tiny_keccak;
 
-use rand::Rng;
-use rand::rngs::OsRng;
 use ed25519_dalek::Keypair;
 use ed25519_dalek::Signature;
+use rand::rngs::OsRng;
+use rand::Rng;
 
 fn main() {
-    let mut csprng: OsRng = OsRng::new().unwrap();
-    let keypair: Keypair = Keypair::generate(&mut csprng);
+  let mut csprng: OsRng = OsRng::new().unwrap();
+  let keypair: Keypair = Keypair::generate(&mut csprng);
 
-    // assert_eq!(32, std::mem::size_of::<types::hash_t>());
-    // println!("{}", std::mem::size_of::<types::hash_t>());
-    println!("{}", std::mem::size_of::<account::Account>());
-    println!("Hello, world!");
-    println!("{}", account::unix_timestamp());
+  // assert_eq!(32, std::mem::size_of::<types::hash_t>());
+  // println!("{}", std::mem::size_of::<types::hash_t>());
+  println!("{}", std::mem::size_of::<account::Account>());
+  println!("Hello, world!");
+  println!("{}", account::unix_timestamp());
 }
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
+  #[test]
+  fn it_works() {
+    assert_eq!(2 + 2, 4);
+  }
 }

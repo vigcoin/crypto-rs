@@ -7,10 +7,10 @@ use ed25519_dalek::Signature;
 use rand::rngs::OsRng;
 use rand::Rng;
 
-use leb128;
-use keccak;
 use hex;
-use rust_base58::{ToBase58, FromBase58};
+use leb128;
+use rust_base58::{FromBase58, ToBase58};
+use tiny_keccak::keccak256;
 
 pub struct Address {
     spend: PublicKey,
@@ -24,10 +24,10 @@ pub struct Keys {
 }
 
 pub struct Account {
-    // address: string,
+    address: String,
     keys: Keys,
     prefix: u64,
-    timestamp: u64,
+    // timestamp: u64,
 }
 
 pub fn unix_timestamp() -> u64 {
@@ -53,80 +53,60 @@ impl Keys {
     }
 }
 
-impl Account {
-    fn getAddress(&self)-> String {
+impl Address {
+    fn generate(&self, prefix: u64) -> String {
         let mut tag = vec![];
-        leb128::write::unsigned(&mut tag, self.prefix);
-    // let tag = hex::encode(v);
-    //     println!("{:?}", tag);
-let spendArray: Vec<u8> = self.keys.address.spend.to_bytes().to_vec();
-let viewArray: Vec<u8> = self.keys.address.view.to_bytes().to_vec();
-let temp = [];
-let given = [&temp, tag.as_slice(), spendArray.as_slice(), viewArray.as_slice()].concat();
-let mut data = [0u64; 25];
-let decoded = given.as_slice();
-        println!("{}", decoded.len() );
+        leb128::write::unsigned(&mut tag, prefix);
+        let spendArray: Vec<u8> = self.spend.to_bytes().to_vec();
+        let viewArray: Vec<u8> = self.view.to_bytes().to_vec();
+        let temp = tag.as_slice();
+        let given = [&temp, spendArray.as_slice(), viewArray.as_slice()].concat();
+        let checksum = &keccak256(given.as_slice())[..4];
+        let temp2 = tag.as_slice();
+        let preBase58 = [
+            &temp2,
+            spendArray.as_slice(),
+            viewArray.as_slice(),
+            checksum,
+        ]
+        .concat();
 
-for i in 0..25 {
-    data[i] = 0;
-    for j in 0..8 {
-        println!("{}", i*8 + j );
-        if (decoded.len() <= i * 8 + j) {
-            break;
+        let mut base58 = String::new();
+        for chunk in preBase58.as_slice().chunks(8) {
+            let mut part = chunk.to_base58();
+            let exp_len = match chunk.len() {
+                8 => 11,
+                6 => 9,
+                5 => 7,
+                _ => panic!("Invalid chunk length: {}", chunk.len()),
+            };
+            let missing = exp_len - part.len();
+            if missing > 0 {
+                part.insert_str(0, &"11111111111"[..missing]);
+            }
+            base58.push_str(&part);
         }
-        data[i] = decoded[i*8 + j].into();
-        data[i] <<= 8;
+        base58
     }
 }
 
-keccak::f1600(&mut data);
-let mut checksum: [u8;4] = [0, 0, 0, 0];
-
-let mut firstData: u32 = (data[0] >> 8 * 4) as u32;
-let mut k = 3;
-while k >= 0 {
-    checksum[k] = (firstData & 0xFF) as u8;
-    firstData >>= 8;
-    if (k > 0) {
-    k = k - 1;
-    } else {
-        break;
-    }
-
-}
-
-
-let temp2 = self.prefix.to_le_bytes();
-
-let preBase58 = [&temp2, decoded, checksum.to_vec().as_slice()].concat();
-
-let beforeB58 = preBase58.as_slice();
-
-
-    // println!("{:?}", given);
-    println!("{:x?}", checksum);
-    // println!("{:?}", tag);
-    return preBase58.to_base58();
-    //   std::string buf = varint::get(tag);
-    //   buf += data;
-    //   crypto::hash_t hash = crypto::cn_fast_hash(buf.data(), buf.size());
-    //   const char* hash_data = reinterpret_cast<const char*>(&hash);
-    //   buf.append(hash_data, addr_checksum_size);
-    //   return encode(buf);
+impl Account {
+    fn getAddress(&self) -> String {
+        return self.address.clone();
     }
     fn new(prefix: u64) -> Account {
         let mut spendRng: OsRng = OsRng::new().unwrap();
         let mut viewRng: OsRng = OsRng::new().unwrap();
-        // assert!(spendRng != viewRng);
         let spendKeypair: Keypair = Keypair::generate(&mut spendRng);
         let viewKeypair: Keypair = Keypair::generate(&mut viewRng);
         let address: Address = Address::new(spendKeypair.public, viewKeypair.public);
+        let addressString = address.generate(prefix);
         let keys: Keys = Keys::new(address, spendKeypair.secret, viewKeypair.secret);
 
         Account {
             prefix: prefix,
-            timestamp: unix_timestamp(),
             keys: keys,
+            address: addressString,
         }
     }
 }
@@ -143,12 +123,12 @@ mod tests {
 
     #[test]
     fn should_create_account() {
-        let prefix = 0xBB;
+        let prefix = 0x3d;
         let acc: Account = Account::new(prefix);
-        let now1: u64 = unix_timestamp();
+        // let now1: u64 = unix_timestamp();
 
         assert!(acc.prefix == prefix);
-        assert!(acc.timestamp - now1 < 10);
+        // assert!(acc.timestamp - now1 < 10);
         println!("{:x?}", acc.keys.spend);
         println!("{:?}", acc.getAddress());
     }

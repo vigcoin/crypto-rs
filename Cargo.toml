@@ -8,7 +8,7 @@ edition = "2018"
 rand = "0.6"
 chrono = "0.4"
 leb128 = "0.2.1"
-keccak = "0.1.0"
+tiny-keccak = "1.4.2"
 hex = "0.3.2"
 rust-base58 = "*"
 

@@ -1,2 +1,2 @@
-# crypto-rs
-rs implementation for cryptonote basic functions
+# cryptonote-rs
+Rust implementation for cryptonote basic functions

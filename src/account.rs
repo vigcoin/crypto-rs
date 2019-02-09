@@ -7,9 +7,8 @@ use ed25519_dalek::Signature;
 use rand::rngs::OsRng;
 use rand::Rng;
 
-use hex;
 use leb128;
-use rust_base58::{FromBase58, ToBase58};
+use rust_base58::{ToBase58};
 use tiny_keccak::keccak256;
 
 pub struct Address {
@@ -27,7 +26,7 @@ pub struct Account {
     address: String,
     keys: Keys,
     prefix: u64,
-    // timestamp: u64,
+    timestamp: u64,
 }
 
 pub fn unix_timestamp() -> u64 {
@@ -107,6 +106,7 @@ impl Account {
             prefix: prefix,
             keys: keys,
             address: addressString,
+            timestamp: unix_timestamp(),
         }
     }
 }
@@ -125,10 +125,10 @@ mod tests {
     fn should_create_account() {
         let prefix = 0x3d;
         let acc: Account = Account::new(prefix);
-        // let now1: u64 = unix_timestamp();
+        let now1: u64 = unix_timestamp();
 
         assert!(acc.prefix == prefix);
-        // assert!(acc.timestamp - now1 < 10);
+        assert!(acc.timestamp - now1 < 10);
         println!("{:x?}", acc.keys.spend);
         println!("{:?}", acc.getAddress());
     }

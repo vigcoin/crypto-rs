@@ -1,4 +1,5 @@
 mod account;
+mod types;
 use std::mem;
 
 extern crate rand;

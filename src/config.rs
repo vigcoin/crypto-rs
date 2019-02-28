@@ -1,5 +1,5 @@
 pub struct CryptoNoteCoinFiles {
-  block: &'static str,
+  pub block: &'static str,
   blockIndex: &'static str,
   blockCache: &'static str,
   pool: &'static str,
@@ -8,12 +8,21 @@ pub struct CryptoNoteCoinFiles {
 }
 
 pub struct Config {
-  name: &'static str,
-  files: CryptoNoteCoinFiles,
+  pub coinName: &'static str,
+  pub files: CryptoNoteCoinFiles,
+}
+
+impl Config {
+  pub fn new(files: CryptoNoteCoinFiles, coinName: &'static str) -> Config {
+    Config {
+      coinName: coinName,
+      files: files,
+    }
+  }
 }
 
 impl CryptoNoteCoinFiles {
-  fn new(files: [&'static str; 6]) -> CryptoNoteCoinFiles {
+  pub fn new(files: [&'static str; 6]) -> CryptoNoteCoinFiles {
     CryptoNoteCoinFiles {
       block: files[0],
       blockIndex: files[1],
@@ -31,19 +40,15 @@ mod tests {
   use super::*;
   #[test]
   fn should_create_coin_files() {
-    let files = CryptoNoteCoinFiles::new([
-      ("a"),
-      ("b"),
-      ("c"),
-      ("d"),
-      ("e"),
-      ("f"),
-    ]);
+    let files = CryptoNoteCoinFiles::new([("a"), ("b"), ("c"), ("d"), ("e"), ("f")]);
     assert!(files.block == "a");
     assert!(files.blockIndex == "b");
     assert!(files.blockCache == "c");
     assert!(files.pool == "d");
     assert!(files.p2p == "e");
     assert!(files.miner == "f");
+    let config = Config::new(files, "vigcoin");
+    assert!(config.coinName == "vigcoin");
+    // assert!(config.files == files);
   }
 }

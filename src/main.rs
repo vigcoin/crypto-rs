@@ -1,5 +1,7 @@
 mod account;
 mod types;
+mod config;
+mod currency;
 use std::mem;
 
 extern crate chrono;

@@ -1,4 +1,4 @@
-use super::basic::*;
+use super::basic::{Difficulty, Hash, Version};
 use super::transaction::*;
 
 pub struct BlockHeader {
@@ -15,7 +15,7 @@ pub struct Block {
 }
 
 pub struct BlockEntry {
-  block:Block,
+  block: Block,
   height: u32,
   cumulativeSize: u64,
   cumulativeDifficulty: Difficulty,

@@ -2,14 +2,14 @@
 extern crate dirs;
 
 pub use super::config::{Config, CryptoNoteCoinFiles};
+pub use super::types::basic::Version;
 
 pub struct Currency {
-  config: Config,
+  pub config: Config,
 }
 
 impl Currency {
   // Get Files
-
   fn getFiles(&self, name: &str) -> String {
     let mut path = dirs::data_dir().unwrap();
     path.push(self.config.coinName);
@@ -36,9 +36,7 @@ impl Currency {
   }
 
   pub fn new(config: Config) -> Currency {
-    Currency {
-      config: config,
-    }
+    Currency { config: config }
   }
 }
 
@@ -49,9 +47,22 @@ mod tests {
 
   #[test]
   fn should_GetBlockFile() {
-
-    let files = CryptoNoteCoinFiles::new([("blocks.dat"), ("blockindexes.dat"), ("blockscache.dat"), ("blockchainindices.dat")]);
-    let config = Config::new(files, "vigcoin");
+    let files = CryptoNoteCoinFiles::new([
+      ("blocks.dat"),
+      ("blockindexes.dat"),
+      ("blockscache.dat"),
+      ("blockchainindices.dat"),
+    ]);
+    let config = Config::new(
+      files,
+      "vigcoin",
+      "aaa",
+      Version {
+        major: 1,
+        minor: 0,
+        patch: 0,
+      },
+    );
 
     let currency = Currency::new(config);
     let mut path = dirs::data_dir().unwrap();

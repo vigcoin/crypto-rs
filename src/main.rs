@@ -2,6 +2,7 @@ mod account;
 mod types;
 mod config;
 mod currency;
+mod blockchain;
 use std::mem;
 
 extern crate chrono;

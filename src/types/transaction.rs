@@ -1,3 +1,5 @@
+use chrono::Utc;
+
 use super::basic::*;
 
 use ed25519_dalek::PublicKey;
@@ -56,4 +58,17 @@ pub struct Transaction {
 pub struct TransactionEntry {
   tx: Transaction,
   indexes: Vec<u32>,
+}
+
+impl Transaction {
+  pub fn new() -> Transaction {
+    Transaction {
+      version: 1,
+      unlockTime: Utc::now().timestamp() as u64,
+      inputs: vec![],
+      outputs: vec![],
+      extra: vec![],
+      signatures: vec![],
+    }
+  }
 }

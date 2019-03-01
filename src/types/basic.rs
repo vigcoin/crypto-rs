@@ -1,17 +1,20 @@
+use std::clone::Clone;
+
 pub type Difficulty = u64;
 
 pub struct Hash {
   data: [u8; 32],
 }
 
+#[derive(Clone)]
 pub struct Version {
-  major: u8,
-  minor: u8,
-  patch: u8,
+  pub major: u8,
+  pub minor: u8,
+  pub patch: u8,
 }
 
 pub struct KeyImage {
-  data: [u8; 32],
+  pub data: [u8; 32],
 }
 
 impl Default for Hash {

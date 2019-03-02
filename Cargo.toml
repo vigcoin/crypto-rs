@@ -1,24 +1,11 @@
-[package]
-name = "vigcoin-core"
-version = "0.1.0"
-authors = ["calidion <calidion@gmail.com>"]
-edition = "2018"
-
-[dependencies]
-rand = "0.6"
-chrono = "0.4"
-leb128 = "0.2.1"
-tiny-keccak = "1.4.2"
-hex = "0.3.2"
-rust-base58 = "*"
-
-[dependencies.ed25519-dalek]
-version = "1.0.0-pre.1"
-
-[[bin]]
-name = "vigcoin-core"
-path = "src/main.rs"
-
-[badges]
-travis-ci = { repository = "vigcoin/core-rs", branch = "master" }
-codecov = { repository = "vigcoin/core-rs", branch = "master", service = "github" }
+[workspace]
+members = [
+  "bin/common",
+  "bin/daemon",
+  "blockchain_db",
+  "common",
+  "crypto",
+  "cryptonote_basic",
+  "cryptonote_config",
+  "cryptonote_core"
+]

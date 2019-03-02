@@ -1,0 +1,8 @@
+[package]
+name = "cryptonote_core"
+version = "0.1.0"
+authors = ["Christopher Tobias <ctobias@gmx.com>"]
+edition = "2018"
+
+[dependencies]
+# blockchain_db = { path = "../blockchain_db" }

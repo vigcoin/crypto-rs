@@ -6,18 +6,19 @@ pub use super::types::basic::Version;
 
 pub struct Currency {
   pub config: Config,
+  pub isHomeDir: bool,
 }
 
 impl Currency {
   // Get Files
   fn getFiles(&self, name: &str) -> String {
     let mut path;
-    if cfg!(unix) && self.config.version.major <= 1 {
+    if cfg!(unix) && self.isHomeDir {
       path = dirs::home_dir().unwrap();
       path.push(format!(".{}", self.config.coinName));
     } else {
-    path = dirs::data_dir().unwrap();
-    path.push(self.config.coinName);
+      path = dirs::data_dir().unwrap();
+      path.push(self.config.coinName);
     }
 
     path.push(name);
@@ -43,7 +44,17 @@ impl Currency {
   }
 
   pub fn new(config: Config) -> Currency {
-    Currency { config: config }
+    Currency {
+      config: config,
+      isHomeDir: false,
+    }
+  }
+
+  pub fn old(config: Config) -> Currency {
+    Currency {
+      config: config,
+      isHomeDir: true,
+    }
   }
 }
 
@@ -71,7 +82,7 @@ mod tests {
       },
     );
 
-    let currency = Currency::new(config);
+    let currency = Currency::old(config);
     let mut path = dirs::data_dir().unwrap();
     path.push(currency.config.coinName);
     assert!(currency.getFiles("blocks.dat") == currency.getBlockFile());

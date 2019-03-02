@@ -1,8 +1,6 @@
-#[allow(non_snake_case_functions)]
 extern crate dirs;
 
-pub use super::config::{Config, CryptoNoteCoinFiles};
-pub use super::types::basic::Version;
+pub use super::config::{Config};
 
 pub struct Currency {
   pub config: Config,
@@ -62,6 +60,8 @@ impl Currency {
 
 mod tests {
   use super::*;
+ use super::super::config::{Config, CryptoNoteCoinFiles};
+ use super::super::types::basic::Version;
 
   #[test]
   fn should_GetBlockFile() {

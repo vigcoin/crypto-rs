@@ -67,8 +67,7 @@ impl Address {
       spendArray.as_slice(),
       viewArray.as_slice(),
       checksum,
-    ]
-    .concat();
+    ].concat();
 
     let mut base58 = String::new();
     for chunk in preBase58.as_slice().chunks(8) {

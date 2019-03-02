@@ -11,8 +11,15 @@ pub struct Currency {
 impl Currency {
   // Get Files
   fn getFiles(&self, name: &str) -> String {
-    let mut path = dirs::data_dir().unwrap();
+    let mut path;
+    if cfg!(unix) && self.config.version.major <= 1 {
+      path = dirs::home_dir().unwrap();
+      path.push(format!(".{}", self.config.coinName));
+    } else {
+    path = dirs::data_dir().unwrap();
     path.push(self.config.coinName);
+    }
+
     path.push(name);
 
     let filename = String::from(path.to_str().unwrap());
@@ -59,6 +66,38 @@ mod tests {
       "aaa",
       Version {
         major: 1,
+        minor: 0,
+        patch: 0,
+      },
+    );
+
+    let currency = Currency::new(config);
+    let mut path = dirs::data_dir().unwrap();
+    path.push(currency.config.coinName);
+    assert!(currency.getFiles("blocks.dat") == currency.getBlockFile());
+    assert!(currency.getFiles("blockindexes.dat") == currency.getBlockIndexFile());
+    assert!(currency.getFiles("blockscache.dat") == currency.getBlockCacheFile());
+    assert!(currency.getFiles("blockchainindices.dat") == currency.getBlockChainFile());
+    println!("{}", currency.getBlockFile());
+    println!("{}", currency.getBlockIndexFile());
+    println!("{}", currency.getBlockCacheFile());
+    println!("{}", currency.getBlockChainFile());
+  }
+
+  #[test]
+  fn should_GetV2BlockFile() {
+    let files = CryptoNoteCoinFiles::new([
+      ("blocks.dat"),
+      ("blockindexes.dat"),
+      ("blockscache.dat"),
+      ("blockchainindices.dat"),
+    ]);
+    let config = Config::new(
+      files,
+      "vigcoin",
+      "aaa",
+      Version {
+        major: 2,
         minor: 0,
         patch: 0,
       },
